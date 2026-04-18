@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedFund App with Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            display: flex;
+            flex-direction: column; 
+            min-height: 100vh;
+            color: #334155;
+            overflow: hidden;
+        }
+
+        /* --- SPLASH SCREEN --- */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #00b09b, #00c9a7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300; 
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .splash-logo { font-size: 50px; animation: pulse 1.5s infinite ease-in-out; }
+        .splash-text { color: white; font-weight: 700; font-size: 24px; margin-top: 15px; letter-spacing: 2px; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .fade-out { opacity: 0; visibility: hidden; }
+
+
+        /* --- TOP NAVIGATION & PROFILE --- */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 48px;
+            background: #f8faff;
+            border-bottom: 1px solid #e0e6ed;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Spaced out for menu vs profile */
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .top-nav ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        .top-nav li {
+            color: #5f6368;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        /* Gmail-style Profile Icon */
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-circle {
+            width: 32px;
+            height: 32px;
+            background-color: #00b09b; /* Matches your brand color */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+
+        .profile-circle:hover {
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- LAYOUT --- */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding-top: 48px;
+        }
+
+        .box {
+            background: white;
+            padding: 30px 25px;
+            width: 90%;
+            max-width: 350px;
+            height: 540px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .show-page {
+            display: block !important;
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* --- BUTTONS & INPUTS --- */
+        .back-btn { position: absolute; top: 20px; left: 20px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; color: #64748b; font-weight: bold; z-index: 10; }
+        h2 { font-size: 22px; margin-bottom: 10px; color: #0f172a; }
+        h3 { font-size: 13px; text-transform: uppercase; color: #94a3b8; margin-bottom: 5px; }
+        #balance { font-size: 40px; font-weight: 700; color: #059669; margin-bottom: 15px; }
+        button { width: 100%; padding: 14px; margin-top: 10px; border: none; border-radius: 14px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .btn-primary { background: linear-gradient(135deg, #00b09b, #00c9a7); }
+        .btn-emergency { background: #ef4444; }
+        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #64748b; margin-top: 5px; }
+        .emergency-contact-box { background: #fff1f2; border-radius: 16px; padding: 12px; margin-top: 15px; }
+        .emergency-label { font-size: 10px; font-weight: 700; color: #e11d48; text-transform: uppercase; }
+        .emergency-number { font-size: 16px; font-weight: 700; color: #9f1239; text-decoration: none; display: block; margin-top: 2px; }
+        input { width: 100%; padding: 14px; margin: 15px 0; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 16px; text-align: center; }
+        .info-section { text-align: left; margin-top: 20px; }
+        .info-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px; border-left: 4px solid #00b09b; padding-left: 10px; }
+        .info-text { font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 20px; }
+        .step { display: flex; gap: 12px; margin-bottom: 15px; }
+        .step-num { background: #00b09b; color: white; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+<div id="splash">
+    <div class="splash-logo">💊</div>
+    <div class="splash-text">MEDFUND</div>
+</div>
+
+<nav class="top-nav">
+    <ul>
+        <li>File</li>
+        <li>Edit</li>
+        <li>View</li>
+        <li>Help</li>
+    </ul>
+
+    <div class="profile-container">
+        <div class="profile-circle" title="Alan K M">
+            AM
+        </div>
+    </div>
+</nav>
+
+<div class="main-container">
+
+    <div class="box show-page" id="home">
+        <h2>💊 MedFund</h2>
+        <h3>Total Savings</h3>
+        <p id="balance">₹0</p>
+        
+        <button class="btn-primary" onclick="switchPage('home', 'payment')">+ Add Money</button>
+        <button class="btn-emergency" onclick="emergency()">Emergency Request</button>
+        <button class="btn-outline" onclick="switchPage('home', 'about')">About & How to Use</button>
+
+        <div class="emergency-contact-box">
+            <span class="emergency-label">Direct Helpline</span>
+            <a href="tel:88XXXX78" class="emergency-number">📞 88XXXX78</a>
+        </div>
+    </div>
+
+    <div class="box" id="about">
+        <button class="back-btn" onclick="switchPage('about', 'home')">←</button>
+        <h2 style="margin-top: 20px;">Information</h2>
+        <div class="info-section">
+            <div class="info-title">About Us</div>
+            <div class="info-text">Your about us content here...</div>
+            <div class="info-title">How to Use</div>
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="info-text">Secure Your Wallet via UPI.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box" id="payment">
+        <button class="back-btn" onclick="switchPage('payment', 'home')">←</button>
+        <h2 style="margin-top: 20px;">Add Funds</h2>
+        <h3>Amount</h3>
+        <input type="number" id="amount" placeholder="₹ 0.00">
+        <button class="btn-primary" onclick="nextStep()">Continue</button>
+    </div>
+
+    <div class="box" id="upi">
+        <button class="back-btn" onclick="switchPage('upi', 'payment')">←</button>
+        <h2 style="margin-top: 20px;">Checkout</h2>
+        <h3>Enter UPI ID</h3>
+        <input type="text" placeholder="username@upi">
+        <button class="btn-primary">Pay Securely</button>
+    </div>
+
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('fade-out');
+        }, 2000);
+    });
+
+    function switchPage(hideId, showId) {
+        document.getElementById(hideId).classList.remove("show-page");
+        const next = document.getElementById(showId);
+        void next.offsetWidth; 
+        next.classList.add("show-page");
+    }
+
+    function nextStep() {
+        let amount = document.getElementById("amount").value;
+        if (amount > 0) { switchPage('payment', 'upi'); } 
+        else { alert("Please enter an amount."); }
+    }
+
+    function emergency() {
+       window.open("https://docs.google.com/forms/d/e/1FAIpQLSdF8uvWdWYX8SZtuFWQbD00H-jN-Os7wSm3xnriti_bUzVN5Q/viewform", "_blank");
+    }
+</script>
+
+</body>
+</html>
