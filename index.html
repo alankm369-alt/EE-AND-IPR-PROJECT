@@ -3,186 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedFund App - Animated</title>
+    <title>MedFund - Secure Healthcare</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; flex-direction: column; min-height: 100vh; color: #334155; overflow: hidden; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f1f5f9;
-            display: flex;
-            flex-direction: column; 
-            min-height: 100vh;
-            color: #334155;
-            overflow: hidden;
-        }
-
-        /* --- SPLASH SCREEN --- */
-        #splash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #00b09b, #00c9a7);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 300; 
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-        .splash-logo { font-size: 50px; animation: pulse 1.5s infinite ease-in-out; }
-        .splash-text { color: white; font-weight: 700; font-size: 24px; margin-top: 15px; letter-spacing: 2px; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        /* --- SPLASH --- */
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #00b09b, #00c9a7); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 500; transition: 0.8s; }
         .fade-out { opacity: 0; visibility: hidden; }
 
-        /* --- NAVIGATION --- */
-        .top-nav {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 48px;
-            background: #f8faff; border-bottom: 1px solid #e0e6ed;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; z-index: 100;
-        }
-        .top-nav ul { list-style: none; display: flex; gap: 15px; }
-        .top-nav li { color: #5f6368; font-size: 13px; cursor: pointer; padding: 5px 8px; border-radius: 4px; transition: 0.2s; }
-        .top-nav li:hover { background: #e8eaed; color: #202124; }
-        
-        .profile-circle {
-            width: 32px; height: 32px; background: #00b09b; color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s;
-        }
-        .profile-circle:hover { transform: rotate(360deg); }
+        /* --- TOP NAV --- */
+        .top-nav { position: fixed; top: 0; width: 100%; height: 48px; background: #f8faff; border-bottom: 1px solid #e0e6ed; display: none; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
+        .top-nav.active { display: flex; }
+        .profile-circle { width: 32px; height: 32px; background: #00b09b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
 
-        /* --- MAIN LAYOUT --- */
+        /* --- BOX CONTAINER --- */
         .main-container { display: flex; justify-content: center; align-items: center; flex-grow: 1; padding-top: 48px; }
-
-        .box {
-            background: white; padding: 30px 25px; width: 90%; max-width: 350px; height: 540px;
-            border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            text-align: center; position: relative; overflow-y: auto; display: none;
-        }
+        .box { background: white; padding: 30px 25px; width: 90%; max-width: 350px; height: 540px; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); text-align: center; position: relative; overflow-y: auto; display: none; }
         .show-page { display: block !important; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- BUTTON ANIMATIONS --- */
-        button {
-            width: 100%; padding: 14px; margin-top: 12px; border: none;
-            border-radius: 14px; color: white; font-size: 15px; font-weight: 600;
-            cursor: pointer; position: relative; overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        /* --- BUTTONS --- */
+        button { width: 100%; padding: 14px; margin-top: 12px; border: none; border-radius: 14px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        button:hover { transform: scale(1.02); }
+        button:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, #00b09b, #00c9a7); }
+        .btn-emergency { background: #ef4444; }
+        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #64748b; }
+        .back-btn { position: absolute; top: 20px; left: 20px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; color: #64748b; z-index: 10; }
 
-        /* Hover Scale */
-        button:hover { transform: scale(1.03); filter: brightness(1.1); }
+        /* --- PAYMENT APP LIST --- */
+        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .app-item { padding: 15px; border: 2px solid #f1f5f9; border-radius: 16px; cursor: pointer; transition: 0.3s; }
+        .app-item:hover { border-color: #00b09b; background: #f0fdfa; }
+        .app-item img { width: 40px; height: 40px; display: block; margin: 0 auto 10px; border-radius: 8px; }
+        .app-item span { font-size: 12px; font-weight: 600; }
 
-        /* Active Click Press */
-        button:active { transform: scale(0.95); filter: brightness(0.9); }
+        /* --- PIN INPUT --- */
+        .pin-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .pin-dot { width: 15px; height: 15px; border: 2px solid #cbd5e1; border-radius: 50%; }
+        .pin-dot.filled { background: #0f172a; border-color: #0f172a; }
 
-        .btn-primary { 
-            background: linear-gradient(135deg, #00b09b, #00c9a7);
-            box-shadow: 0 4px 15px rgba(0, 176, 155, 0.2);
-        }
-
-        /* Shine Effect for Primary Buttons */
-        .btn-primary::after {
-            content: ''; position: absolute; top: -50%; left: -60%;
-            width: 50px; height: 200%; background: rgba(255,255,255,0.2);
-            transform: rotate(30deg); transition: 0.5s;
-            animation: shine 4s infinite;
-        }
-        @keyframes shine { 0% { left: -60%; } 20% { left: 120%; } 100% { left: 120%; } }
-
-        .btn-emergency { 
-            background: #ef4444; 
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
-        }
-        
-        .btn-outline { 
-            background: transparent; border: 2px solid #e2e8f0; color: #64748b; 
-        }
-        .btn-outline:hover { background: #f8fafc; border-color: #cbd5e1; }
-
-        .back-btn {
-            position: absolute; top: 20px; left: 20px;
-            background: #f1f5f9; border: none; width: 35px; height: 35px;
-            border-radius: 50%; cursor: pointer; color: #64748b; font-weight: bold;
-            transition: 0.3s ease; z-index: 10;
-        }
-        .back-btn:hover { background: #0f172a; color: white; transform: translateX(-3px); }
-
-        /* --- INPUTS & CONTENT --- */
-        input { width: 100%; padding: 14px; margin: 15px 0; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 16px; text-align: center; transition: 0.3s; }
-        input:focus { border-color: #00b09b; outline: none; box-shadow: 0 0 0 4px rgba(0, 176, 155, 0.1); }
-
-        .emergency-contact-box { background: #fff1f2; border-radius: 16px; padding: 12px; margin-top: 15px; transition: 0.3s; }
-        .emergency-contact-box:hover { background: #ffe4e6; }
-        .emergency-number { font-size: 16px; font-weight: 700; color: #9f1239; text-decoration: none; display: block; margin-top: 2px; }
-
-        .info-section { text-align: left; margin-top: 20px; }
-        .info-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px; border-left: 4px solid #00b09b; padding-left: 10px; }
-        .info-text { font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 20px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 2px solid #e2e8f0; text-align: center; font-size: 16px; }
+        .emergency-contact-box { background: #fff1f2; border-radius: 16px; padding: 12px; margin-top: 15px; }
     </style>
 </head>
-
 <body>
 
 <div id="splash">
-    <div class="splash-logo">💊</div>
-    <div class="splash-text">MEDFUND</div>
+    <div style="font-size: 50px;">💊</div>
+    <div style="color: white; font-weight: 700; font-size: 24px; margin-top: 10px;">MEDFUND</div>
 </div>
 
-<nav class="top-nav">
-    <ul>
-        <li>File</li>
-        <li>Edit</li>
-        <li>View</li>
-        <li>Help</li>
+<nav class="top-nav" id="navbar">
+    <ul style="list-style:none; display:flex; gap:10px; font-size:12px; color:#5f6368;">
+        <li>File</li><li>Edit</li><li>Help</li>
     </ul>
-    <div class="profile-circle" title="Alan K M">AM</div>
+    <div class="profile-circle">AM</div>
 </nav>
 
 <div class="main-container">
 
-    <div class="box show-page" id="home">
+    <div class="box show-page" id="auth">
+        <h2 style="margin-top: 40px;">Welcome</h2>
+        <p style="color: #64748b; margin-bottom: 20px;">Login to your MedFund account</p>
+        <input type="email" placeholder="Email Address">
+        <input type="password" placeholder="Password">
+        <button class="btn-primary" onclick="login()">Login</button>
+        <div style="margin: 15px 0; font-size: 13px; color: #94a3b8;">OR</div>
+        <button class="btn-outline">Create Account</button>
+    </div>
+
+    <div class="box" id="home">
         <h2>💊 MedFund</h2>
         <h3>Total Savings</h3>
-        <p id="balance" style="font-size: 40px; font-weight: 700; color: #059669; margin-bottom: 15px;">₹0</p>
-        
-        <button class="btn-primary" onclick="switchPage('home', 'payment')">+ Add Money</button>
+        <p id="balance" style="font-size: 40px; font-weight: 700; color: #059669; margin-bottom: 20px;">₹0</p>
+        <button class="btn-primary" onclick="switchPage('home', 'select-app')">+ Add Money</button>
         <button class="btn-emergency" onclick="emergency()">Emergency Request</button>
-        <button class="btn-outline" onclick="switchPage('home', 'about')">About & How to Use</button>
-
         <div class="emergency-contact-box">
-            <span style="font-size: 10px; font-weight: 700; color: #e11d48; text-transform: uppercase;">Direct Helpline</span>
-            <a href="tel:88XXXX78" class="emergency-number">📞 88XXXX78</a>
+            <span style="font-size: 10px; font-weight: 700; color: #e11d48;">Direct Helpline</span>
+            <a href="tel:88XXXX78" style="text-decoration:none; color:#9f1239; font-weight:700; display:block;">📞 88XXXX78</a>
         </div>
     </div>
 
-    <div class="box" id="about">
-        <button class="back-btn" onclick="switchPage('about', 'home')">←</button>
-        <h2 style="margin-top: 20px;">Information</h2>
-        <div class="info-section">
-            <div class="info-title">About Us</div>
-            <div class="info-text">Welcome to MedFund. We ensure accessible healthcare funding for all.</div>
-            <div class="info-title">How to Use</div>
-            <p class="info-text">1. Add funds via UPI.<br>2. Request help in emergencies.</p>
+    <div class="box" id="select-app">
+        <button class="back-btn" onclick="switchPage('select-app', 'home')">←</button>
+        <h2 style="margin-top: 30px;">Select App</h2>
+        <div class="app-grid">
+            <div class="app-item" onclick="switchPage('select-app', 'amount-page')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay">
+                <span>G-Pay</span>
+            </div>
+            <div class="app-item" onclick="switchPage('select-app', 'amount-page')">
+                <img src="https://cdn.worldvectorlogo.com/logos/paytm-1.svg" alt="Paytm">
+                <span>Paytm</span>
+            </div>
+            <div class="app-item" onclick="switchPage('select-app', 'amount-page')">
+                <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/phonepe-logo-icon.png" alt="PhonePe">
+                <span>PhonePe</span>
+            </div>
+            <div class="app-item" onclick="switchPage('select-app', 'amount-page')">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR69_oU_mN8fU2-mF_Uun8eHlU6VvOQ9G1M9A&s" alt="SuperMoney">
+                <span>SuperMoney</span>
+            </div>
         </div>
     </div>
 
-    <div class="box" id="payment">
-        <button class="back-btn" onclick="switchPage('payment', 'home')">←</button>
-        <h2 style="margin-top: 20px;">Add Funds</h2>
-        <input type="number" id="amount" placeholder="₹ 0.00">
-        <button class="btn-primary" onclick="nextStep()">Continue</button>
+    <div class="box" id="amount-page">
+        <button class="back-btn" onclick="switchPage('amount-page', 'select-app')">←</button>
+        <h2 style="margin-top: 30px;">Amount</h2>
+        <input type="number" id="pay-amount" placeholder="₹ 0.00" style="font-size: 24px; font-weight: 700;">
+        <button class="btn-primary" onclick="proceedToPin()">Proceed to Pay</button>
     </div>
 
-    <div class="box" id="upi">
-        <button class="back-btn" onclick="switchPage('upi', 'payment')">←</button>
-        <h2 style="margin-top: 20px;">Checkout</h2>
-        <input type="text" placeholder="username@upi">
-        <button class="btn-primary">Pay Securely</button>
+    <div class="box" id="pin-page">
+        <button class="back-btn" onclick="switchPage('pin-page', 'amount-page')">←</button>
+        <h2 style="margin-top: 30px;">Enter UPI PIN</h2>
+        <p style="color: #64748b; font-size: 14px;">Sending money securely via UPI</p>
+        <div class="pin-container">
+            <div class="pin-dot filled"></div>
+            <div class="pin-dot filled"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;">
+            <button class="btn-outline" style="color:#0f172a">1</button>
+            <button class="btn-outline" style="color:#0f172a">2</button>
+            <button class="btn-outline" style="color:#0f172a">3</button>
+            <button class="btn-outline" style="color:#0f172a">4</button>
+            <button class="btn-outline" style="color:#0f172a">5</button>
+            <button class="btn-outline" style="color:#0f172a">6</button>
+        </div>
+        <button class="btn-primary" onclick="completePayment()">Submit PIN</button>
     </div>
 
 </div>
@@ -199,10 +152,20 @@
         next.classList.add("show-page");
     }
 
-    function nextStep() {
-        let amount = document.getElementById("amount").value;
-        if (amount > 0) { switchPage('payment', 'upi'); } 
-        else { alert("Please enter an amount."); }
+    function login() {
+        document.getElementById('navbar').classList.add('active');
+        switchPage('auth', 'home');
+    }
+
+    function proceedToPin() {
+        let amt = document.getElementById('pay-amount').value;
+        if (amt > 0) switchPage('amount-page', 'pin-page');
+        else alert("Enter amount");
+    }
+
+    function completePayment() {
+        alert("Payment Successful!");
+        switchPage('pin-page', 'home');
     }
 
     function emergency() {
